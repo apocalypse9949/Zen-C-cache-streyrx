@@ -10,6 +10,104 @@
 #include "ast.h"
 #include "zprep_plugin.h"
 
+// Helper: emit a single pattern condition (either a value, or a range)
+static void emit_single_pattern_cond(const char *pat, int id, FILE *out)
+{
+    // Check for range pattern: "start..end" or "start..=end"
+    char *range_incl = strstr(pat, "..=");
+    char *range_excl = strstr(pat, "..");
+
+    if (range_incl)
+    {
+        // Inclusive range: start..=end -> _m_id >= start && _m_id <= end
+        int start_len = (int)(range_incl - pat);
+        char *start = xmalloc(start_len + 1);
+        strncpy(start, pat, start_len);
+        start[start_len] = 0;
+        char *end = xstrdup(range_incl + 3);
+        fprintf(out, "(_m_%d >= %s && _m_%d <= %s)", id, start, id, end);
+        free(start);
+        free(end);
+    }
+    else if (range_excl)
+    {
+        // Exclusive range: start..end -> _m_id >= start && _m_id < end
+        int start_len = (int)(range_excl - pat);
+        char *start = xmalloc(start_len + 1);
+        strncpy(start, pat, start_len);
+        start[start_len] = 0;
+        char *end = xstrdup(range_excl + 2);
+        fprintf(out, "(_m_%d >= %s && _m_%d < %s)", id, start, id, end);
+        free(start);
+        free(end);
+    }
+    else if (pat[0] == '"')
+    {
+        // String pattern
+        fprintf(out, "strcmp(_m_%d, %s) == 0", id, pat);
+    }
+    else if (pat[0] == '\'')
+    {
+        // Char literal pattern
+        fprintf(out, "_m_%d == %s", id, pat);
+    }
+    else
+    {
+        // Numeric or simple pattern
+        fprintf(out, "_m_%d == %s", id, pat);
+    }
+}
+
+// Helper: emit condition for a pattern (may contain OR patterns with '|')
+static void emit_pattern_condition(ParserContext *ctx, const char *pattern, int id, FILE *out)
+{
+    // Check if pattern contains '|' for OR patterns
+    if (strchr(pattern, '|'))
+    {
+        // Split by '|' and emit OR conditions
+        char *pattern_copy = xstrdup(pattern);
+        char *saveptr;
+        char *part = strtok_r(pattern_copy, "|", &saveptr);
+        int first = 1;
+        fprintf(out, "(");
+        while (part)
+        {
+            if (!first)
+            {
+                fprintf(out, " || ");
+            }
+
+            // Check if part is an enum variant
+            EnumVariantReg *reg = find_enum_variant(ctx, part);
+            if (reg)
+            {
+                fprintf(out, "_m_%d.tag == %d", id, reg->tag_id);
+            }
+            else
+            {
+                emit_single_pattern_cond(part, id, out);
+            }
+            first = 0;
+            part = strtok_r(NULL, "|", &saveptr);
+        }
+        fprintf(out, ")");
+        free(pattern_copy);
+    }
+    else
+    {
+        // Single pattern (may be a range)
+        EnumVariantReg *reg = find_enum_variant(ctx, pattern);
+        if (reg)
+        {
+            fprintf(out, "_m_%d.tag == %d", id, reg->tag_id);
+        }
+        else
+        {
+            emit_single_pattern_cond(pattern, id, out);
+        }
+    }
+}
+
 // static function for internal use.
 static char *g_current_func_ret_type = NULL;
 static void codegen_match_internal(ParserContext *ctx, ASTNode *node, FILE *out, int use_result)
@@ -138,29 +236,8 @@ static void codegen_match_internal(ParserContext *ctx, ASTNode *node, FILE *out,
         }
         else
         {
-            EnumVariantReg *reg = find_enum_variant(ctx, c->match_case.pattern);
-            if (reg)
-            {
-                fprintf(out, "_m_%d.tag == %d", id, reg->tag_id);
-            }
-            else if (c->match_case.pattern[0] == '"')
-            {
-                fprintf(out, "strcmp(_m_%d, %s) == 0", id, c->match_case.pattern);
-            }
-            else if (isdigit(c->match_case.pattern[0]) || c->match_case.pattern[0] == '-')
-            {
-                // Numeric pattern
-                fprintf(out, "_m_%d == %s", id, c->match_case.pattern);
-            }
-            else if (c->match_case.pattern[0] == '\'')
-            {
-                // Char literal pattern
-                fprintf(out, "_m_%d == %s", id, c->match_case.pattern);
-            }
-            else
-            {
-                fprintf(out, "1");
-            }
+            // Use helper for OR patterns, range patterns, and simple patterns
+            emit_pattern_condition(ctx, c->match_case.pattern, id, out);
         }
         fprintf(out, ") { ");
         if (c->match_case.binding_name)

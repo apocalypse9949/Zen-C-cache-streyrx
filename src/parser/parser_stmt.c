@@ -217,7 +217,11 @@ ASTNode *parse_match(ParserContext *ctx, Lexer *l)
             break;
         }
 
-        // --- 1. Parse Comma-Separated Patterns ---
+        // --- 1. Parse Patterns (with OR and range support) ---
+        // Patterns can be:
+        //   - Single value: 1
+        //   - OR patterns: 1 || 2 or 1 or 2
+        //   - Range patterns: 1..5 or 1..=5
         char patterns_buf[1024];
         patterns_buf[0] = 0;
         int pattern_count = 0;
@@ -238,20 +242,42 @@ ASTNode *parse_match(ParserContext *ctx, Lexer *l)
                 p_str = tmp;
             }
 
+            // Check for range pattern: value..end or value..=end
+            if (lexer_peek(l).type == TOK_DOTDOT || lexer_peek(l).type == TOK_DOTDOT_EQ)
+            {
+                int is_inclusive = (lexer_peek(l).type == TOK_DOTDOT_EQ);
+                lexer_next(l); // eat .. or ..=
+                Token end_tok = lexer_next(l);
+                char *end_str = token_strdup(end_tok);
+
+                // Build range pattern: "start..end" or "start..=end"
+                char *range_str = xmalloc(strlen(p_str) + strlen(end_str) + 4);
+                sprintf(range_str, "%s%s%s", p_str, is_inclusive ? "..=" : "..", end_str);
+                free(p_str);
+                free(end_str);
+                p_str = range_str;
+            }
+
             if (pattern_count > 0)
             {
-                strcat(patterns_buf, ",");
+                strcat(patterns_buf, "|");
             }
             strcat(patterns_buf, p_str);
             free(p_str);
             pattern_count++;
 
-            Lexer lookahead = *l;
-            skip_comments(&lookahead);
-            if (lexer_peek(&lookahead).type == TOK_COMMA)
+            // Check for OR continuation: ||, 'or', or comma (legacy)
+            Token next = lexer_peek(l);
+            skip_comments(l);
+            int is_or = (next.type == TOK_OR) ||
+                        (next.type == TOK_OP && next.len == 2 && next.start[0] == '|' &&
+                         next.start[1] == '|') ||
+                        (next.type == TOK_COMMA); // Legacy comma support
+            if (is_or)
             {
-                lexer_next(l); // eat comma
+                lexer_next(l); // eat ||, 'or', or comma
                 skip_comments(l);
+                continue;
             }
             else
             {
