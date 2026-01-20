@@ -183,7 +183,7 @@ test "test_immutable" {
     "Distance: {dist}";
     var sum = accumulate(10, 5);
     "Accumulate: {sum}";
-    var p3 = process_point(p1);
+    var p3 = process_point(Point { x: 0, y: 0 });
     "Processed: ({p3.x}, {p3.y})";
     counter_immut();
 }

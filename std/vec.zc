@@ -111,7 +111,6 @@ impl Vec<T> {
             self.grow();
         }
         self.data[self.len] = item;
-        self.data[self.len] = item;
         self.len = self.len + 1;
     }
 

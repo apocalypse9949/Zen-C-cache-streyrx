@@ -1235,6 +1235,29 @@ ASTNode *parse_var_decl(ParserContext *ctx, Lexer *l)
 
     n->var_decl.init_expr = init;
 
+    // Move Semantics Logic for Initialization
+    check_move_usage(ctx, init, init ? init->token : name_tok);
+    if (init && init->type == NODE_EXPR_VAR)
+    {
+        Type *t = find_symbol_type_info(ctx, init->var_ref.name);
+        if (!t)
+        {
+            Symbol *s = find_symbol_entry(ctx, init->var_ref.name);
+            if (s)
+            {
+                t = s->type_info;
+            }
+        }
+        if (!is_type_copy(t))
+        {
+            Symbol *s = find_symbol_entry(ctx, init->var_ref.name);
+            if (s)
+            {
+                s->is_moved = 1;
+            }
+        }
+    }
+
     // Global detection: Either no scope (yet) OR root scope (no parent)
     if (!ctx->current_scope || !ctx->current_scope->parent)
     {
@@ -1483,6 +1506,11 @@ ASTNode *parse_return(ParserContext *ctx, Lexer *l)
         else
         {
             n->ret.value = parse_expression(ctx, l);
+            check_move_usage(ctx, n->ret.value, n->ret.value ? n->ret.value->token : lexer_peek(l));
+
+            // Note: Returning a non-Copy variable effectively moves it out.
+            // We could mark it as moved, but scope ends anyway.
+            // The critical part is checking we aren't returning an ALREADY moved value.
         }
     }
 
@@ -1668,8 +1696,8 @@ ASTNode *parse_for(ParserContext *ctx, Lexer *l)
                 char *iter_method = "iterator";
 
                 // Check for reference iteration: for x in &vec
-                if (obj_expr->type == NODE_EXPR_UNARY && 
-                    obj_expr->unary.op && strcmp(obj_expr->unary.op, "&") == 0)
+                if (obj_expr->type == NODE_EXPR_UNARY && obj_expr->unary.op &&
+                    strcmp(obj_expr->unary.op, "&") == 0)
                 {
                     obj_expr = obj_expr->unary.operand;
                     iter_method = "iter_ref";
@@ -3403,14 +3431,16 @@ ASTNode *parse_impl(ParserContext *ctx, Lexer *l)
 
         // If target struct is generic, register this impl as a template
         ASTNode *def = find_struct_def(ctx, name2);
-        if (def && ((def->type == NODE_STRUCT && def->strct.is_template) || 
+        if (def && ((def->type == NODE_STRUCT && def->strct.is_template) ||
                     (def->type == NODE_ENUM && def->enm.is_template)))
         {
-             const char *gp = "T";
-             if (def->type == NODE_STRUCT && def->strct.generic_param_count > 0) 
-                 gp = def->strct.generic_params[0];
-             // TODO: Enum generic params support if needed
-             register_impl_template(ctx, name2, gp, n);
+            const char *gp = "T";
+            if (def->type == NODE_STRUCT && def->strct.generic_param_count > 0)
+            {
+                gp = def->strct.generic_params[0];
+            }
+            // TODO: Enum generic params support if needed
+            register_impl_template(ctx, name2, gp, n);
         }
 
         return n;

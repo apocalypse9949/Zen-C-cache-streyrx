@@ -1520,7 +1520,8 @@ ASTNode *copy_ast_replacing(ASTNode *n, const char *p, const char *c, const char
         break;
     case NODE_IMPL_TRAIT:
         new_node->impl_trait.trait_name = xstrdup(n->impl_trait.trait_name);
-        new_node->impl_trait.target_type = replace_type_str(n->impl_trait.target_type, p, c, os, ns);
+        new_node->impl_trait.target_type =
+            replace_type_str(n->impl_trait.target_type, p, c, os, ns);
         new_node->impl_trait.methods = copy_ast_replacing(n->impl_trait.methods, p, c, os, ns);
         break;
     default:
@@ -1884,13 +1885,15 @@ void instantiate_methods(ParserContext *ctx, GenericImplTemplate *it,
                                            it->struct_name, mangled_struct_name);
     it->impl_node->next = backup_next; // Restore
 
-    
     ASTNode *meth = NULL;
 
-    if (new_impl->type == NODE_IMPL) {
+    if (new_impl->type == NODE_IMPL)
+    {
         new_impl->impl.struct_name = xstrdup(mangled_struct_name);
         meth = new_impl->impl.methods;
-    } else if (new_impl->type == NODE_IMPL_TRAIT) {
+    }
+    else if (new_impl->type == NODE_IMPL_TRAIT)
+    {
         new_impl->impl_trait.target_type = xstrdup(mangled_struct_name);
         meth = new_impl->impl_trait.methods;
     }
@@ -2009,7 +2012,7 @@ void instantiate_generic(ParserContext *ctx, const char *tpl, const char *arg,
         ASTNode *i = ast_create(NODE_STRUCT);
         i->strct.name = xstrdup(m);
         i->strct.is_template = 0;
-        
+
         // Copy type attributes (e.g. has_drop)
         i->type_info = type_new(TYPE_STRUCT);
         i->type_info->name = xstrdup(m);
@@ -2033,7 +2036,7 @@ void instantiate_generic(ParserContext *ctx, const char *tpl, const char *arg,
         ASTNode *i = ast_create(NODE_ENUM);
         i->enm.name = xstrdup(m);
         i->enm.is_template = 0;
-        
+
         // Copy type attributes (e.g. has_drop)
         i->type_info = type_new(TYPE_ENUM);
         i->type_info->name = xstrdup(m);

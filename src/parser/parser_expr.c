@@ -9,6 +9,65 @@
 
 Type *get_field_type(ParserContext *ctx, Type *struct_type, const char *field_name);
 
+int is_type_copy(Type *t)
+{
+    if (!t)
+    {
+        return 1; // Default to Copy for unknown types to avoid annoyance
+    }
+
+    switch (t->kind)
+    {
+    case TYPE_INT:
+    case TYPE_I8:
+    case TYPE_I16:
+    case TYPE_I32:
+    case TYPE_I64:
+    case TYPE_U8:
+    case TYPE_U16:
+    case TYPE_U32:
+    case TYPE_U64:
+    case TYPE_F32:
+    case TYPE_F64:
+    case TYPE_BOOL:
+    case TYPE_CHAR:
+    case TYPE_VOID:
+    case TYPE_POINTER: // Pointers are Copy
+    case TYPE_FUNCTION:
+    case TYPE_ENUM: // Enums are integers
+        return 1;
+
+    case TYPE_STRUCT:
+        // Structs are MOVE by default
+        return 0;
+
+    case TYPE_ARRAY:
+        // Arrays decay or are fixed size context dependent, but usually not simplistic copy
+        // For Zen-C safety, let's treat them as Copy if they are treated as pointers,
+        // but if it's a value assignment, C doesn't support it anyway unless wrapped in struct.
+        return 0;
+
+    default:
+        return 1;
+    }
+}
+
+void check_move_usage(ParserContext *ctx, ASTNode *node, Token t)
+{
+    if (!node)
+    {
+        return;
+    }
+    if (node->type == NODE_EXPR_VAR)
+    {
+        Symbol *sym = find_symbol_entry(ctx, node->var_ref.name);
+        if (sym && sym->is_moved)
+        {
+            zpanic_at(t, "Use of moved value '%s'", node->var_ref.name);
+        }
+    }
+}
+
 static int type_is_unsigned(Type *t)
 {
     if (!t)
@@ -636,9 +695,6 @@ void analyze_lambda_captures(ParserContext *ctx, ASTNode *lambda)
     for (int i = 0; i < num_refs; i++)
     {
         free(all_refs[i]);
-    }
-    if (all_refs)
-    {
         free(all_refs);
     }
 }
@@ -1758,6 +1814,31 @@ ASTNode *parse_primary(ParserContext *ctx, Lexer *l)
                     }
 
                     ASTNode *arg = parse_expression(ctx, l);
+
+                    // Move Semantics Logic (Added for known funcs)
+                    check_move_usage(ctx, arg, arg ? arg->token : t1);
+                    if (arg && arg->type == NODE_EXPR_VAR)
+                    {
+                        Type *t = find_symbol_type_info(ctx, arg->var_ref.name);
+                        if (!t)
+                        {
+                            Symbol *s = find_symbol_entry(ctx, arg->var_ref.name);
+                            if (s)
+                            {
+                                t = s->type_info;
+                            }
+                        }
+
+                        if (!is_type_copy(t))
+                        {
+                            Symbol *s = find_symbol_entry(ctx, arg->var_ref.name);
+                            if (s)
+                            {
+                                s->is_moved = 1;
+                            }
+                        }
+                    }
+
                     if (!head)
                     {
                         head = arg;
@@ -1864,6 +1945,31 @@ ASTNode *parse_primary(ParserContext *ctx, Lexer *l)
                     }
 
                     ASTNode *arg = parse_expression(ctx, l);
+
+                    // Move Semantics Logic (Added)
+                    check_move_usage(ctx, arg, arg ? arg->token : t1);
+                    if (arg && arg->type == NODE_EXPR_VAR)
+                    {
+                        Type *t = find_symbol_type_info(ctx, arg->var_ref.name);
+                        if (!t)
+                        {
+                            Symbol *s = find_symbol_entry(ctx, arg->var_ref.name);
+                            if (s)
+                            {
+                                t = s->type_info;
+                            }
+                        }
+
+                        if (!is_type_copy(t))
+                        {
+                            Symbol *s = find_symbol_entry(ctx, arg->var_ref.name);
+                            if (s)
+                            {
+                                s->is_moved = 1;
+                            }
+                        }
+                    }
+
                     if (!head)
                     {
                         head = arg;
@@ -2125,6 +2231,31 @@ ASTNode *parse_primary(ParserContext *ctx, Lexer *l)
                     }
 
                     ASTNode *arg = parse_expression(ctx, l);
+
+                    // Move Semantics Logic
+                    check_move_usage(ctx, arg, arg ? arg->token : t1);
+                    if (arg && arg->type == NODE_EXPR_VAR)
+                    {
+                        Type *t = find_symbol_type_info(ctx, arg->var_ref.name);
+                        if (!t)
+                        {
+                            Symbol *s = find_symbol_entry(ctx, arg->var_ref.name);
+                            if (s)
+                            {
+                                t = s->type_info;
+                            }
+                        }
+
+                        if (!is_type_copy(t))
+                        {
+                            Symbol *s = find_symbol_entry(ctx, arg->var_ref.name);
+                            if (s)
+                            {
+                                s->is_moved = 1;
+                            }
+                        }
+                    }
+
                     if (!head)
                     {
                         head = arg;
@@ -3201,6 +3332,31 @@ ASTNode *parse_expr_prec(ParserContext *ctx, Lexer *l, Precedence min_prec)
                     }
 
                     ASTNode *arg = parse_expression(ctx, l);
+
+                    // Move Semantics Logic
+                    check_move_usage(ctx, arg, arg ? arg->token : t1);
+                    if (arg && arg->type == NODE_EXPR_VAR)
+                    {
+                        Type *t = find_symbol_type_info(ctx, arg->var_ref.name);
+                        if (!t)
+                        {
+                            Symbol *s = find_symbol_entry(ctx, arg->var_ref.name);
+                            if (s)
+                            {
+                                t = s->type_info;
+                            }
+                        }
+
+                        if (!is_type_copy(t))
+                        {
+                            Symbol *s = find_symbol_entry(ctx, arg->var_ref.name);
+                            if (s)
+                            {
+                                s->is_moved = 1;
+                            }
+                        }
+                    }
+
                     if (!head)
                     {
                         head = arg;
@@ -3576,6 +3732,52 @@ ASTNode *parse_expr_prec(ParserContext *ctx, Lexer *l, Precedence min_prec)
         }
         bin->binary.left = lhs;
         bin->binary.right = rhs;
+
+        // Move Semantics Logic
+        if (op.type == TOK_OP && is_token(op, "=")) // Assignment "="
+        {
+            // 1. RHS is being read: Check validity
+            check_move_usage(ctx, rhs, op);
+
+            // 2. Mark RHS as moved (Transfer ownership) if it's a Move type
+            if (rhs->type == NODE_EXPR_VAR)
+            {
+                Type *t = find_symbol_type_info(ctx, rhs->var_ref.name);
+                // If type info not on var, try looking up symbol
+                if (!t)
+                {
+                    Symbol *s = find_symbol_entry(ctx, rhs->var_ref.name);
+                    if (s)
+                    {
+                        t = s->type_info;
+                    }
+                }
+
+                if (!is_type_copy(t))
+                {
+                    Symbol *s = find_symbol_entry(ctx, rhs->var_ref.name);
+                    if (s)
+                    {
+                        s->is_moved = 1;
+                    }
+                }
+            }
+
+            // 3. LHS is being written: Resurrect (it is now valid)
+            if (lhs->type == NODE_EXPR_VAR)
+            {
+                Symbol *s = find_symbol_entry(ctx, lhs->var_ref.name);
+                if (s)
+                {
+                    s->is_moved = 0;
+                }
+            }
+        }
+        else // All other binary ops (including +=, -=, etc. which read LHS first)
+        {
+            check_move_usage(ctx, lhs, op);
+            check_move_usage(ctx, rhs, op);
+        }
 
         if (op.type == TOK_LANGLE)
         {

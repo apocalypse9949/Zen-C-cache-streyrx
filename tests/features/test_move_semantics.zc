@@ -1,0 +1,64 @@
+
+struct Point {
+    x: int;
+}
+
+struct Mover {
+    val: int;
+}
+
+fn test_basic_move() {
+    var p1 = Mover { val: 10 };
+    var p2 = p1; // p1 moved to p2
+    
+    // Valid usage of p2
+    assert(p2.val == 10, "p2 should be valid");
+
+    // Invalid usage of p1 (Uncomment to test compiler error)
+    // var p3 = p1; 
+}
+
+fn test_primitive_copy() {
+    var i = 10;
+    var j = i; // Copy
+    var k = i; // Copy again - should be valid
+    assert(k == 10, "Primitive copy failed");
+}
+
+fn test_reassignment() {
+    var m1 = Mover { val: 1 };
+    var m2 = m1; // m1 moved
+    
+    m1 = Mover { val: 2 }; // Resurrect m1
+    var m3 = m1; // Valid now
+    assert(m3.val == 2, "Resurrection failed");
+}
+
+fn test_func_arg(m: Mover) {
+    assert(m.val == 10, "Func arg failed");
+}
+
+fn main() {
+    test_basic_move();
+    test_primitive_copy();
+    test_reassignment();
+    
+    var m = Mover { val: 10 };
+    test_func_arg(m); // m moved
+    
+    // ** Negative Tests (Uncomment to verify) **
+    
+    // 1. Use after move (Assignment)
+    // test_basic_move(); // See line 18 inside function
+    
+    // 2. Use after move (Call)
+    // test_func_arg(m); // Should fail: Use of moved value 'm'
+    
+    // 3. Use after return
+    /*
+    fn fail_return(m: Mover) -> Mover {
+        var m2 = m;
+        return m; // Should fail: Use of moved value 'm'
+    }
+    */
+}

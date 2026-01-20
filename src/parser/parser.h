@@ -42,6 +42,7 @@ typedef struct Symbol
     Token decl_token;
     int is_const_value;
     int const_int_val;
+    int is_moved;
     struct Symbol *next;
 } Symbol;
 
@@ -427,6 +428,10 @@ ASTNode *parse_trait(ParserContext *ctx, Lexer *l);
 ASTNode *parse_impl(ParserContext *ctx, Lexer *l);
 ASTNode *parse_impl_trait(ParserContext *ctx, Lexer *l);
 ASTNode *parse_test(ParserContext *ctx, Lexer *l);
+
+// Move semantics helpers
+int is_type_copy(Type *t);
+void check_move_usage(ParserContext *ctx, ASTNode *node, Token t);
 ASTNode *parse_include(ParserContext *ctx, Lexer *l);
 ASTNode *parse_import(ParserContext *ctx, Lexer *l);
 ASTNode *parse_comptime(ParserContext *ctx, Lexer *l);
