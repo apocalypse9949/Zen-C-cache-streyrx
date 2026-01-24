@@ -567,8 +567,8 @@ fn main() {
 Implement `Drop` to run cleanup logic automatically.
 ```zc
 impl Drop for MyStruct {
-    fn drop(mut self) {
-        free(self.data);
+    fn drop(self) {
+        self.free();
     }
 }
 ```
