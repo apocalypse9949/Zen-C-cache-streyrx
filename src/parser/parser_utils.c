@@ -3468,8 +3468,7 @@ int validate_types(ParserContext *ctx)
             SelectiveImport *si = find_selective_import(ctx, u->name);
             if (!si && !is_trait(u->name))
             {
-                zpanic_at(u->location, "Unknown type '%s'", u->name);
-                errors++;
+                zwarn_at(u->location, "Unknown type '%s' (assuming external C struct)", u->name);
             }
         }
         u = u->next;

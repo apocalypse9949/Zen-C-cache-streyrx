@@ -439,6 +439,14 @@ Type *parse_type_base(ParserContext *ctx, Lexer *l)
             return type_new(TYPE_ISIZE);
         }
 
+        // Relaxed Type Check: If explicit 'struct Name', trust the user.
+        if (explicit_struct)
+        {
+            Type *ty = type_new(TYPE_STRUCT);
+            ty->name = name;
+            ty->is_explicit_struct = 1;
+        }
+
         // Selective imports ONLY apply when we're NOT in a module context
         if (!ctx->current_module_prefix)
         {
@@ -704,6 +712,19 @@ Type *parse_type_base(ParserContext *ctx, Lexer *l)
 
         Type *ty = type_new(TYPE_STRUCT);
         ty->name = tuple_name;
+        return ty;
+    }
+
+    // If we have an identifier that wasn't found,
+    // assume it is a valid external C type
+    // (for example, a struct defined in implementation).
+    if (t.type == TOK_IDENT)
+    {
+        char *fallback = token_strdup(t);
+        lexer_next(l);
+        Type *ty = type_new(TYPE_STRUCT);
+        ty->name = fallback;
+        ty->is_explicit_struct = 0;
         return ty;
     }
 
