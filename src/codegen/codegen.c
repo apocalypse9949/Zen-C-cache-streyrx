@@ -464,6 +464,32 @@ void codegen_expression(ParserContext *ctx, ASTNode *node, FILE *out)
                             ref = ref->next;
                         }
 
+                        if (!resolved_method_suffix)
+                        {
+                            GenericImplTemplate *it = ctx->impl_templates;
+                            while (it)
+                            {
+                                char *tname = NULL;
+                                if (it->impl_node && it->impl_node->type == NODE_IMPL_TRAIT)
+                                {
+                                    tname = it->impl_node->impl_trait.trait_name;
+                                }
+                                if (tname)
+                                {
+                                    char trait_mangled[512];
+                                    sprintf(trait_mangled, "%s__%s_%s", base, tname, method);
+                                    if (find_func(ctx, trait_mangled))
+                                    {
+                                        char *suffix = xmalloc(strlen(tname) + strlen(method) + 2);
+                                        sprintf(suffix, "%s_%s", tname, method);
+                                        resolved_method_suffix = suffix;
+                                        break;
+                                    }
+                                }
+                                it = it->next;
+                            }
+                        }
+
                         if (resolved_method_suffix)
                         {
                             method = resolved_method_suffix;

@@ -187,6 +187,19 @@ ASTNode *parse_impl(ParserContext *ctx, Lexer *l)
         Token t2 = lexer_next(l);
         char *name2 = token_strdup(t2);
 
+        char *target_gen_param = NULL;
+        if (lexer_peek(l).type == TOK_LANGLE)
+        {
+            lexer_next(l); // eat <
+            Token gt = lexer_next(l);
+            target_gen_param = token_strdup(gt);
+            if (lexer_next(l).type != TOK_RANGLE)
+            {
+                zpanic_at(lexer_peek(l), "Expected > in impl struct generic");
+            }
+            register_generic(ctx, target_gen_param);
+        }
+
         register_impl(ctx, name1, name2);
 
         // RAII: Check for "Drop" trait implementation
@@ -231,6 +244,18 @@ ASTNode *parse_impl(ParserContext *ctx, Lexer *l)
 
         lexer_next(l); // eat {
         ASTNode *h = 0, *tl = 0;
+
+        char *full_target_name = name2;
+        if (target_gen_param)
+        {
+            full_target_name = xmalloc(strlen(name2) + strlen(target_gen_param) + 3);
+            sprintf(full_target_name, "%s<%s>", name2, target_gen_param);
+        }
+        else
+        {
+            full_target_name = xstrdup(name2);
+        }
+
         while (1)
         {
             skip_comments(l);
@@ -247,7 +272,9 @@ ASTNode *parse_impl(ParserContext *ctx, Lexer *l)
                 sprintf(mangled, "%s__%s_%s", name2, name1, f->func.name);
                 free(f->func.name);
                 f->func.name = mangled;
-                char *na = patch_self_args(f->func.args, name2);
+
+                // Use full_target_name (Vec<T>) for self patching
+                char *na = patch_self_args(f->func.args, full_target_name);
                 free(f->func.args);
                 f->func.args = na;
 
@@ -286,7 +313,8 @@ ASTNode *parse_impl(ParserContext *ctx, Lexer *l)
                     sprintf(mangled, "%s__%s_%s", name2, name1, f->func.name);
                     free(f->func.name);
                     f->func.name = mangled;
-                    char *na = patch_self_args(f->func.args, name2);
+
+                    char *na = patch_self_args(f->func.args, full_target_name);
                     free(f->func.args);
                     f->func.args = na;
 
@@ -322,6 +350,16 @@ ASTNode *parse_impl(ParserContext *ctx, Lexer *l)
                 lexer_next(l);
             }
         }
+
+        if (target_gen_param)
+        {
+            free(full_target_name);
+        }
+        else
+        {
+            free(full_target_name); // It was strdup/ref. Wait, xstrdup needs free.
+        }
+
         ctx->current_impl_struct = NULL; // Restore context
         ASTNode *n = ast_create(NODE_IMPL_TRAIT);
         n->impl_trait.trait_name = name1;
@@ -331,11 +369,15 @@ ASTNode *parse_impl(ParserContext *ctx, Lexer *l)
 
         // If target struct is generic, register this impl as a template
         ASTNode *def = find_struct_def(ctx, name2);
-        if (def && ((def->type == NODE_STRUCT && def->strct.is_template) ||
-                    (def->type == NODE_ENUM && def->enm.is_template)))
+        if (target_gen_param || (def && ((def->type == NODE_STRUCT && def->strct.is_template) ||
+                                         (def->type == NODE_ENUM && def->enm.is_template))))
         {
             const char *gp = "T";
-            if (def->type == NODE_STRUCT && def->strct.generic_param_count > 0)
+            if (target_gen_param)
+            {
+                gp = target_gen_param;
+            }
+            else if (def && def->type == NODE_STRUCT && def->strct.generic_param_count > 0)
             {
                 gp = def->strct.generic_params[0];
             }
@@ -344,6 +386,10 @@ ASTNode *parse_impl(ParserContext *ctx, Lexer *l)
         }
 
         if (gen_param)
+        {
+            ctx->known_generics_count--;
+        }
+        if (target_gen_param)
         {
             ctx->known_generics_count--;
         }

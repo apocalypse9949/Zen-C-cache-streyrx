@@ -207,17 +207,43 @@ char *patch_self_args(const char *args, const char *struct_name)
     {
         return NULL;
     }
-    char *new_args = xmalloc(strlen(args) + strlen(struct_name) + 10);
+
+    // Sanitize struct name for C usage (Vec<T> -> Vec_T)
+    char *safe_name = xmalloc(strlen(struct_name) + 1);
+    int j = 0;
+    for (int i = 0; struct_name[i]; i++)
+    {
+        if (struct_name[i] == '<')
+        {
+            safe_name[j++] = '_';
+        }
+        else if (struct_name[i] == '>')
+        {
+            // skip
+        }
+        else if (struct_name[i] == ' ')
+        {
+            // skip
+        }
+        else
+        {
+            safe_name[j++] = struct_name[i];
+        }
+    }
+    safe_name[j] = 0;
+
+    char *new_args = xmalloc(strlen(args) + strlen(safe_name) + 10);
 
     // Check if it starts with "void* self"
     if (strncmp(args, "void* self", 10) == 0)
     {
-        sprintf(new_args, "%s* self%s", struct_name, args + 10);
+        sprintf(new_args, "%s* self%s", safe_name, args + 10);
     }
     else
     {
         strcpy(new_args, args);
     }
+    free(safe_name);
     return new_args;
 }
 // Helper for Value-Returning Defer

@@ -1646,13 +1646,59 @@ ASTNode *parse_primary(ParserContext *ctx, Lexer *l)
                                                 v = v->next;
                                             }
                                         }
+                                        int resolved = 0;
                                         if (is_variant)
                                         {
                                             sprintf(tmp, "%s_%.*s", acc, suffix.len, suffix.start);
+                                            resolved = 1;
                                         }
                                         else
                                         {
-                                            sprintf(tmp, "%s__%.*s", acc, suffix.len, suffix.start);
+                                            char inherent_name[256];
+                                            sprintf(inherent_name, "%s__%.*s", acc, suffix.len,
+                                                    suffix.start);
+
+                                            if (find_func(ctx, inherent_name))
+                                            {
+                                                strcpy(tmp, inherent_name);
+                                                resolved = 1;
+                                            }
+                                            else
+                                            {
+                                                GenericImplTemplate *it = ctx->impl_templates;
+                                                while (it)
+                                                {
+                                                    if (strcmp(it->struct_name, gname) == 0)
+                                                    {
+                                                        char *tname = NULL;
+                                                        if (it->impl_node &&
+                                                            it->impl_node->type == NODE_IMPL_TRAIT)
+                                                        {
+                                                            tname = it->impl_node->impl_trait
+                                                                        .trait_name;
+                                                        }
+                                                        if (tname)
+                                                        {
+                                                            char cand[512];
+                                                            sprintf(cand, "%s__%s_%.*s", acc, tname,
+                                                                    suffix.len, suffix.start);
+
+                                                            if (find_func(ctx, cand))
+                                                            {
+                                                                strcpy(tmp, cand);
+                                                                resolved = 1;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    it = it->next;
+                                                }
+                                            }
+                                            if (!resolved)
+                                            {
+                                                sprintf(tmp, "%s__%.*s", acc, suffix.len,
+                                                        suffix.start);
+                                            }
                                         }
                                         handled_as_generic = 1;
                                         break; // Found and handled
@@ -5587,14 +5633,6 @@ ASTNode *parse_arrow_lambda_single(ParserContext *ctx, Lexer *l, char *param_nam
                 free(t->inner);
             }
             t->inner = ret_val->type_info;
-        }
-        else
-        {
-            if (param_name[0] == 'x')
-            {
-                fprintf(stderr, "DEBUG: Return type unknown/null! ret=%p kind=%d\n",
-                        ret_val->type_info, ret_val->type_info ? ret_val->type_info->kind : -1);
-            }
         }
     }
 
