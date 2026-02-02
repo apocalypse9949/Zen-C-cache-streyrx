@@ -518,7 +518,7 @@ void codegen_expression(ParserContext *ctx, ASTNode *node, FILE *out)
                     char *call_base = mangled_base;
 
                     int need_cast = 0;
-                    char mixin_func_name[128];
+                    char mixin_func_name[512];
                     snprintf(mixin_func_name, sizeof(mixin_func_name), "%s__%s", call_base, method);
 
                     char *resolved_method_suffix = NULL;

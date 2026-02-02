@@ -3070,6 +3070,7 @@ ASTNode *parse_primary(ParserContext *ctx, Lexer *l)
     else
     {
         zpanic_at(t, "Unexpected token in parse_primary: %.*s", t.len, t.start);
+        return NULL;
     }
 
     while (1)
@@ -4077,6 +4078,10 @@ ASTNode *parse_expr_prec(ParserContext *ctx, Lexer *l, Precedence min_prec)
     else
     {
         lhs = parse_primary(ctx, l);
+        if (!lhs)
+        {
+            return NULL;
+        }
     }
 
     while (1)
@@ -5741,7 +5746,16 @@ ASTNode *parse_expr_prec(ParserContext *ctx, Lexer *l, Precedence min_prec)
                     char suggestion[256];
                     sprintf(suggestion, "Both operands must have compatible types for comparison");
 
-                    zpanic_with_suggestion(op, msg, suggestion);
+                    if (g_config.mode_lsp)
+                    {
+                        zwarn_at(op, "LSP: %s", msg);
+                        // Assume result is int (bool) to continue
+                        bin->type_info = type_new(TYPE_INT);
+                    }
+                    else
+                    {
+                        zpanic_with_suggestion(op, msg, suggestion);
+                    }
                 }
             }
             else

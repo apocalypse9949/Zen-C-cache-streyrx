@@ -360,6 +360,7 @@ typedef struct
     int use_cpp;         ///< 1 if --cpp (emit C++ compatible code).
     int use_cuda;        ///< 1 if --cuda (emit CUDA-compatible code).
     int use_objc;        ///< 1 if --objc (emit Objective-C compatible code).
+    int mode_lsp;        ///< 1 if 'lsp' command (Language Server Protocol).
 
     // GCC Flags accumulator.
     char gcc_flags[4096]; ///< Flags passed to the backend compiler.

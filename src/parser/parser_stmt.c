@@ -2347,6 +2347,7 @@ ASTNode *parse_statement(ParserContext *ctx, Lexer *l)
         if (strncmp(tk.start, "var", 3) == 0 && tk.len == 3)
         {
             zpanic_at(tk, "'var' is deprecated. Use 'let' instead.");
+            return parse_var_decl(ctx, l);
         }
 
         // Static local variable: static let x = 0;
@@ -2737,6 +2738,10 @@ ASTNode *parse_statement(ParserContext *ctx, Lexer *l)
 
     // Default: Expression Statement
     s = parse_expression(ctx, l);
+    if (!s)
+    {
+        return NULL;
+    }
 
     int has_semi = 0;
     if (lexer_peek(l).type == TOK_SEMICOLON)
@@ -3254,7 +3259,19 @@ ASTNode *parse_import(ParserContext *ctx, Lexer *l)
     char *src = load_file(fn);
     if (!src)
     {
-        zpanic_at(t, "Not found: %s", fn);
+        if (!src)
+        {
+            if (g_config.mode_lsp)
+            {
+                // In LSP mode, just warn and return error node or similar
+                // For now, let's return a dummy ERROR node or NULL to avoid crashing
+                zwarn_at(t, "LSP: Import not found: %s", fn);
+                ASTNode *dummy = ast_create(NODE_BLOCK);
+                dummy->block.statements = NULL;
+                return dummy;
+            }
+            zpanic_at(t, "Not found: %s", fn);
+        }
     }
 
     Lexer i;

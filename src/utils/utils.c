@@ -247,6 +247,16 @@ void zpanic_with_suggestion(Token t, const char *msg, const char *suggestion)
         fprintf(stderr, COLOR_CYAN "   = help: " COLOR_RESET "%s\n", suggestion);
     }
 
+    if (g_parser_ctx && g_parser_ctx->is_fault_tolerant && g_parser_ctx->on_error)
+    {
+        // Construct error message buffer
+        char full_msg[1024];
+        snprintf(full_msg, sizeof(full_msg), "%s (Suggestion: %s)", msg,
+                 suggestion ? suggestion : "");
+        g_parser_ctx->on_error(g_parser_ctx->error_callback_data, t, full_msg);
+        return; // Recover!
+    }
+
     exit(1);
 }
 
