@@ -1,6 +1,6 @@
 <div align="center">
 
-[English](README.md) • [简体中文](README_ZH_CN.md) • [繁體中文](README_ZH_TW.md) • [Español](README_ES.md) • [Italiano](README_IT.md) • [Português Brasileiro](README_PT_BR.md)
+[English](../README.md) • [简体中文](README_ZH_CN.md) • [繁體中文](README_ZH_TW.md) • [Español](README_ES.md) • [Italiano](README_IT.md) • [Português Brasileiro](README_PT_BR.md)
 
 </div>
 
@@ -1157,29 +1157,29 @@ fn main() {
 
 O Zen C inclui a biblioteca padrão (`std`), que cobre as funcionalidades essenciais.
 
-[Navegue pela Documentação da Biblioteca Padrão](docs/std/README.md)
+[Navegue pela Documentação da Biblioteca Padrão](../docs/std/README.md)
 
 ### Key Modules
 
 | Module | Description | Docs |
 | :--- | :--- | :--- |
-| **`std/vec.zc`** | Growable dynamic array `Vec<T>`. | [Docs](docs/std/vec.md) |
-| **`std/string.zc`** | Heap-allocated `String` type with UTF-8 support. | [Docs](docs/std/string.md) |
-| **`std/queue.zc`** | FIFO queue (Ring Buffer). | [Docs](docs/std/queue.md) |
-| **`std/map.zc`** | Generic Hash Map `Map<V>`. | [Docs](docs/std/map.md) |
-| **`std/fs.zc`** | File system operations. | [Docs](docs/std/fs.md) |
-| **`std/io.zc`** | Standard Input/Output (`print`/`println`). | [Docs](docs/std/io.md) |
-| **`std/option.zc`** | Optional values (`Some`/`None`). | [Docs](docs/std/option.md) |
-| **`std/result.zc`** | Error handling (`Ok`/`Err`). | [Docs](docs/std/result.md) |
-| **`std/path.zc`** | Cross-platform path manipulation. | [Docs](docs/std/path.md) |
-| **`std/env.zc`** | Process environment variables. | [Docs](docs/std/env.md) |
-| **`std/net.zc`** | TCP networking (Sockets). | [Docs](docs/std/net.md) |
-| **`std/thread.zc`** | Threads and Synchronization. | [Docs](docs/std/thread.md) |
-| **`std/time.zc`** | Time measurement and sleep. | [Docs](docs/std/time.md) |
-| **`std/json.zc`** | JSON parsing and serialization. | [Docs](docs/std/json.md) |
-| **`std/stack.zc`** | LIFO Stack `Stack<T>`. | [Docs](docs/std/stack.md) |
-| **`std/set.zc`** | Generic Hash Set `Set<T>`. | [Docs](docs/std/set.md) |
-| **`std/process.zc`** | Process execution and management. | [Docs](docs/std/process.md) |
+| **`std/vec.zc`** | Growable dynamic array `Vec<T>`. | [Docs](../docs/std/vec.md) |
+| **`std/string.zc`** | Heap-allocated `String` type with UTF-8 support. | [Docs](../docs/std/string.md) |
+| **`std/queue.zc`** | FIFO queue (Ring Buffer). | [Docs](../docs/std/queue.md) |
+| **`std/map.zc`** | Generic Hash Map `Map<V>`. | [Docs](../docs/std/map.md) |
+| **`std/fs.zc`** | File system operations. | [Docs](../docs/std/fs.md) |
+| **`std/io.zc`** | Standard Input/Output (`print`/`println`). | [Docs](../docs/std/io.md) |
+| **`std/option.zc`** | Optional values (`Some`/`None`). | [Docs](../docs/std/option.md) |
+| **`std/result.zc`** | Error handling (`Ok`/`Err`). | [Docs](../docs/std/result.md) |
+| **`std/path.zc`** | Cross-platform path manipulation. | [Docs](../docs/std/path.md) |
+| **`std/env.zc`** | Process environment variables. | [Docs](../docs/std/env.md) |
+| **`std/net.zc`** | TCP networking (Sockets). | [Docs](../docs/std/net.md) |
+| **`std/thread.zc`** | Threads and Synchronization. | [Docs](../docs/std/thread.md) |
+| **`std/time.zc`** | Time measurement and sleep. | [Docs](../docs/std/time.md) |
+| **`std/json.zc`** | JSON parsing and serialization. | [Docs](../docs/std/json.md) |
+| **`std/stack.zc`** | LIFO Stack `Stack<T>`. | [Docs](../docs/std/stack.md) |
+| **`std/set.zc`** | Generic Hash Set `Set<T>`. | [Docs](../docs/std/set.md) |
+| **`std/process.zc`** | Process execution and management. | [Docs](../docs/std/process.md) |
 ---
 
 ## Ferramentas

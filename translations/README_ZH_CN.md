@@ -1,7 +1,7 @@
 
 <div align="center">
 
-[English](README.md) • [Русский](README_RU.md) • [简体中文](README_ZH_CN.md) • [繁體中文](README_ZH_TW.md) • [Español](README_ES.md) • [Italiano](README_IT.md) • [Português Brasileiro](README_PT_BR.md)
+[English](../README.md) • [Русский](README_RU.md) • [简体中文](README_ZH_CN.md) • [繁體中文](README_ZH_TW.md) • [Español](README_ES.md) • [Italiano](README_IT.md) • [Português Brasileiro](README_PT_BR.md)
 
 </div>
 
@@ -1153,29 +1153,29 @@ fn main() {
 
 Zen C 包含一个涵盖基本功能的标准库 (`std`)。
 
-[浏览标准库文档](docs/std/README.md)
+[浏览标准库文档](../docs/std/README.md)
 
 ### 核心模块
 
 | 模块 | 描述 | 文档 |
 | :--- | :--- | :--- |
-| **`std/vec.zc`** | 可增长动态数组 `Vec<T>`。 | [文档](docs/std/vec.md) |
-| **`std/string.zc`** | 堆分配的 `String` 类型，支持 UTF-8。 | [文档](docs/std/string.md) |
-| **`std/queue.zc`** | 先进先出队列 (环形缓冲区)。 | [文档](docs/std/queue.md) |
-| **`std/map.zc`** | 泛型哈希表 `Map<V>`。 | [文档](docs/std/map.md) |
-| **`std/fs.zc`** | 文件系统操作。 | [文档](docs/std/fs.md) |
-| **`std/io.zc`** | 标准输入/输出 (`print`/`println`)。 | [文档](docs/std/io.md) |
-| **`std/option.zc`** | 可选值 (`Some`/`None`)。 | [文档](docs/std/option.md) |
-| **`std/result.zc`** | 错误处理 (`Ok`/`Err`)。 | [文档](docs/std/result.md) |
-| **`std/path.zc`** | 跨平台路径操作。 | [文档](docs/std/path.md) |
-| **`std/env.zc`** | 进程环境变量。 | [文档](docs/std/env.md) |
-| **`std/net.zc`** | TCP 网络 (套接字)。 | [文档](docs/std/net.md) |
-| **`std/thread.zc`** | 线程与同步。 | [文档](docs/std/thread.md) |
-| **`std/time.zc`** | 时间测量与睡眠。 | [文档](docs/std/time.md) |
-| **`std/json.zc`** | JSON 解析与序列化。 | [文档](docs/std/json.md) |
-| **`std/stack.zc`** | 后进先出栈 `Stack<T>`。 | [文档](docs/std/stack.md) |
-| **`std/set.zc`** | 泛型哈希集合 `Set<T>`。 | [文档](docs/std/set.md) |
-| **`std/process.zc`** | 进程执行与管理。 | [文档](docs/std/process.md) |
+| **`std/vec.zc`** | 可增长动态数组 `Vec<T>`。 | [文档](../docs/std/vec.md) |
+| **`std/string.zc`** | 堆分配的 `String` 类型，支持 UTF-8。 | [文档](../docs/std/string.md) |
+| **`std/queue.zc`** | 先进先出队列 (环形缓冲区)。 | [文档](../docs/std/queue.md) |
+| **`std/map.zc`** | 泛型哈希表 `Map<V>`。 | [文档](../docs/std/map.md) |
+| **`std/fs.zc`** | 文件系统操作。 | [文档](../docs/std/fs.md) |
+| **`std/io.zc`** | 标准输入/输出 (`print`/`println`)。 | [文档](../docs/std/io.md) |
+| **`std/option.zc`** | 可选值 (`Some`/`None`)。 | [文档](../docs/std/option.md) |
+| **`std/result.zc`** | 错误处理 (`Ok`/`Err`)。 | [文档](../docs/std/result.md) |
+| **`std/path.zc`** | 跨平台路径操作。 | [文档](../docs/std/path.md) |
+| **`std/env.zc`** | 进程环境变量。 | [文档](../docs/std/env.md) |
+| **`std/net.zc`** | TCP 网络 (套接字)。 | [文档](../docs/std/net.md) |
+| **`std/thread.zc`** | 线程与同步。 | [文档](../docs/std/thread.md) |
+| **`std/time.zc`** | 时间测量与睡眠。 | [文档](../docs/std/time.md) |
+| **`std/json.zc`** | JSON 解析与序列化。 | [文档](../docs/std/json.md) |
+| **`std/stack.zc`** | 后进先出栈 `Stack<T>`。 | [文档](../docs/std/stack.md) |
+| **`std/set.zc`** | 泛型哈希集合 `Set<T>`。 | [文档](../docs/std/set.md) |
+| **`std/process.zc`** | 进程执行与管理。 | [文档](../docs/std/process.md) |
 
 ---
 

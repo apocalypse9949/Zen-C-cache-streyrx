@@ -1,7 +1,7 @@
 
 <div align="center">
 
-[English](README.md) • [Русский](README_RU.md) • [简体中文](README_ZH_CN.md) • [繁體中文](README_ZH_TW.md) • [Español](README_ES.md) • [Italiano](README_IT.md) • [Português Brasileiro](README_PT_BR.md)
+[English](../README.md) • [Русский](README_RU.md) • [简体中文](README_ZH_CN.md) • [繁體中文](README_ZH_TW.md) • [Español](README_ES.md) • [Italiano](README_IT.md) • [Português Brasileiro](README_PT_BR.md)
   
 </div>
 
@@ -1153,29 +1153,29 @@ fn main() {
 
 Zen C incluye una biblioteca estándar (`std`) que cubre las funcionalidades esenciales.
 
-[Explorar la Documentación de la Biblioteca Estándar](docs/std/README.md)
+[Explorar la Documentación de la Biblioteca Estándar](../docs/std/README.md)
 
 ### Módulos Clave
 
 | Módulo | Descripción | Docs |
 | :--- | :--- | :--- |
-| **`std/vec.zc`** | Array dinámico creíble `Vec<T>`. | [Docs](docs/std/vec.md) |
-| **`std/string.zc`** | Tipo `String` asignado en el heap con soporte UTF-8. | [Docs](docs/std/string.md) |
-| **`std/queue.zc`** | Cola FIFO (Ring Buffer). | [Docs](docs/std/queue.md) |
-| **`std/map.zc`** | Mapa Hash Genérico `Map<V>`. | [Docs](docs/std/map.md) |
-| **`std/fs.zc`** | Operaciones del sistema de archivos. | [Docs](docs/std/fs.md) |
-| **`std/io.zc`** | Entrada/Salida estándar (`print`/`println`). | [Docs](docs/std/io.md) |
-| **`std/option.zc`** | Valores opcionales (`Some`/`None`). | [Docs](docs/std/option.md) |
-| **`std/result.zc`** | Gestión de errores (`Ok`/`Err`). | [Docs](docs/std/result.md) |
-| **`std/path.zc`** | Manipulación de rutas multiplataforma. | [Docs](docs/std/path.md) |
-| **`std/env.zc`** | Variables de entorno del proceso. | [Docs](docs/std/env.md) |
-| **`std/net.zc`** | Redes TCP (Sockets). | [Docs](docs/std/net.md) |
-| **`std/thread.zc`** | Hilos y Sincronización. | [Docs](docs/std/thread.md) |
-| **`std/time.zc`** | Medición de tiempo y espera (sleep). | [Docs](docs/std/time.md) |
-| **`std/json.zc`** | Parseo y serialización de JSON. | [Docs](docs/std/json.md) |
-| **`std/stack.zc`** | Pila LIFO `Stack<T>`. | [Docs](docs/std/stack.md) |
-| **`std/set.zc`** | Conjunto Hash Genérico `Set<T>`. | [Docs](docs/std/set.md) |
-| **`std/process.zc`** | Ejecución y gestión de procesos. | [Docs](docs/std/process.md) |
+| **`std/vec.zc`** | Array dinámico creíble `Vec<T>`. | [Docs](../docs/std/vec.md) |
+| **`std/string.zc`** | Tipo `String` asignado en el heap con soporte UTF-8. | [Docs](../docs/std/string.md) |
+| **`std/queue.zc`** | Cola FIFO (Ring Buffer). | [Docs](../docs/std/queue.md) |
+| **`std/map.zc`** | Mapa Hash Genérico `Map<V>`. | [Docs](../docs/std/map.md) |
+| **`std/fs.zc`** | Operaciones del sistema de archivos. | [Docs](../docs/std/fs.md) |
+| **`std/io.zc`** | Entrada/Salida estándar (`print`/`println`). | [Docs](../docs/std/io.md) |
+| **`std/option.zc`** | Valores opcionales (`Some`/`None`). | [Docs](../docs/std/option.md) |
+| **`std/result.zc`** | Gestión de errores (`Ok`/`Err`). | [Docs](../docs/std/result.md) |
+| **`std/path.zc`** | Manipulación de rutas multiplataforma. | [Docs](../docs/std/path.md) |
+| **`std/env.zc`** | Variables de entorno del proceso. | [Docs](../docs/std/env.md) |
+| **`std/net.zc`** | Redes TCP (Sockets). | [Docs](../docs/std/net.md) |
+| **`std/thread.zc`** | Hilos y Sincronización. | [Docs](../docs/std/thread.md) |
+| **`std/time.zc`** | Medición de tiempo y espera (sleep). | [Docs](../docs/std/time.md) |
+| **`std/json.zc`** | Parseo y serialización de JSON. | [Docs](../docs/std/json.md) |
+| **`std/stack.zc`** | Pila LIFO `Stack<T>`. | [Docs](../docs/std/stack.md) |
+| **`std/set.zc`** | Conjunto Hash Genérico `Set<T>`. | [Docs](../docs/std/set.md) |
+| **`std/process.zc`** | Ejecución y gestión de procesos. | [Docs](../docs/std/process.md) |
 
 ---
 

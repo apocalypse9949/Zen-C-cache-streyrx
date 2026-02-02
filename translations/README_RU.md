@@ -1,7 +1,7 @@
 
 <div align="center">
 
-[English](README.md) • [Русский](README_RU.md) • [简体中文](README_ZH_CN.md) • [繁體中文](README_ZH_TW.md) • [Español](README_ES.md) • [Italiano](README_IT.md)
+[English](../README.md) • [Русский](README_RU.md) • [简体中文](README_ZH_CN.md) • [繁體中文](README_ZH_TW.md) • [Español](README_ES.md) • [Italiano](README_IT.md)
 
 </div>
 
@@ -1130,29 +1130,29 @@ fn main() {
 
 Zen C включает стандартную библиотеку (`std`), охватывающую основную функциональность.
 
-[Просмотрите документацию стандартной библиотеки](docs/std/README.md)
+[Просмотрите документацию стандартной библиотеки](../docs/std/README.md)
 
 ### Ключевые модули
 
 | Модуль               | Описание                                           | Docs                        |
 |:---------------------|:---------------------------------------------------|:----------------------------|
-| **`std/vec.zc`**     | Растущий динамический массив `Vec<T>`.             | [Docs](docs/std/vec.md)     |
-| **`std/string.zc`**  | Выделенный в heap тип `String` с поддержкой UTF-8. | [Docs](docs/std/string.md)  |
-| **`std/queue.zc`**   | FIFO очередь (Ring Buffer).                        | [Docs](docs/std/queue.md)   |
-| **`std/map.zc`**     | Обобщённая хеш-таблица `Map<V>`.                   | [Docs](docs/std/map.md)     |
-| **`std/fs.zc`**      | Операции файловой системы.                         | [Docs](docs/std/fs.md)      |
-| **`std/io.zc`**      | Стандартный ввод/вывод (`print`/`println`).        | [Docs](docs/std/io.md)      |
-| **`std/option.zc`**  | Опциональные значения (`Some`/`None`).             | [Docs](docs/std/option.md)  |
-| **`std/result.zc`**  | Обработка ошибок (`Ok`/`Err`).                     | [Docs](docs/std/result.md)  |
-| **`std/path.zc`**    | Кроссплатформенная манипуляция путями.             | [Docs](docs/std/path.md)    |
-| **`std/env.zc`**     | Переменные окружения процесса.                     | [Docs](docs/std/env.md)     |
-| **`std/net.zc`**     | TCP сетевое взаимодействие (Sockets).              | [Docs](docs/std/net.md)     |
-| **`std/thread.zc`**  | Потоки и синхронизация.                            | [Docs](docs/std/thread.md)  |
-| **`std/time.zc`**    | Измерение времени и сон.                           | [Docs](docs/std/time.md)    |
-| **`std/json.zc`**    | Парсинг и сериализация JSON.                       | [Docs](docs/std/json.md)    |
-| **`std/stack.zc`**   | LIFO стек `Stack<T>`.                              | [Docs](docs/std/stack.md)   |
-| **`std/set.zc`**     | Обобщённое хеш-множество `Set<T>`.                 | [Docs](docs/std/set.md)     |
-| **`std/process.zc`** | Выполнение и управление процессами.                | [Docs](docs/std/process.md) |
+| **`std/vec.zc`**     | Растущий динамический массив `Vec<T>`.             | [Docs](../docs/std/vec.md)     |
+| **`std/string.zc`**  | Выделенный в heap тип `String` с поддержкой UTF-8. | [Docs](../docs/std/string.md)  |
+| **`std/queue.zc`**   | FIFO очередь (Ring Buffer).                        | [Docs](../docs/std/queue.md)   |
+| **`std/map.zc`**     | Обобщённая хеш-таблица `Map<V>`.                   | [Docs](../docs/std/map.md)     |
+| **`std/fs.zc`**      | Операции файловой системы.                         | [Docs](../docs/std/fs.md)      |
+| **`std/io.zc`**      | Стандартный ввод/вывод (`print`/`println`).        | [Docs](../docs/std/io.md)      |
+| **`std/option.zc`**  | Опциональные значения (`Some`/`None`).             | [Docs](../docs/std/option.md)  |
+| **`std/result.zc`**  | Обработка ошибок (`Ok`/`Err`).                     | [Docs](../docs/std/result.md)  |
+| **`std/path.zc`**    | Кроссплатформенная манипуляция путями.             | [Docs](../docs/std/path.md)    |
+| **`std/env.zc`**     | Переменные окружения процесса.                     | [Docs](../docs/std/env.md)     |
+| **`std/net.zc`**     | TCP сетевое взаимодействие (Sockets).              | [Docs](../docs/std/net.md)     |
+| **`std/thread.zc`**  | Потоки и синхронизация.                            | [Docs](../docs/std/thread.md)  |
+| **`std/time.zc`**    | Измерение времени и сон.                           | [Docs](../docs/std/time.md)    |
+| **`std/json.zc`**    | Парсинг и сериализация JSON.                       | [Docs](../docs/std/json.md)    |
+| **`std/stack.zc`**   | LIFO стек `Stack<T>`.                              | [Docs](../docs/std/stack.md)   |
+| **`std/set.zc`**     | Обобщённое хеш-множество `Set<T>`.                 | [Docs](../docs/std/set.md)     |
+| **`std/process.zc`** | Выполнение и управление процессами.                | [Docs](../docs/std/process.md) |
 
 ---
 
