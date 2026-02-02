@@ -370,8 +370,7 @@ static void check_format_string(ASTNode *call, Token t)
             if (spec == 'd' || spec == 'i' || spec == 'u' || spec == 'x' || spec == 'X' ||
                 spec == 'o')
             {
-                if (vt && vt->kind != TYPE_INT && vt->kind != TYPE_I64 && !type_is_unsigned(vt) &&
-                    vt->kind != TYPE_CHAR)
+                if (vt && !is_integer_type(vt))
                 {
                     warn_format_string(t, arg_num, "integer", got_type);
                 }

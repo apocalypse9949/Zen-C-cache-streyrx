@@ -108,10 +108,10 @@ impl Thread {
         
         memcpy(ctx, &func, 16);
 
-        let ret = _z_thread_spawn(ctx_copy, &t);
+        let ret = _z_thread_spawn(ctx, &out_handle);
         
         if ret != 0 {
-            free(ctx_copy);
+            free(ctx);
             return Result<Thread>::Err("Failed to create thread");
         }
         
