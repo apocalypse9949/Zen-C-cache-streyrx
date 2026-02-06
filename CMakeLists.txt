@@ -43,6 +43,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src/lexer
     ${PROJECT_SOURCE_DIR}/src/analysis
     ${PROJECT_SOURCE_DIR}/src/lsp
+    ${PROJECT_SOURCE_DIR}/src/diagnostics
 )
 
 # Source files
