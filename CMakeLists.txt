@@ -130,6 +130,8 @@ endforeach()
 # --- Install Rules ---
 install(TARGETS zc DESTINATION bin)
 install(DIRECTORY std DESTINATION share/zenc)
+install(FILES src/zen/facts.json DESTINATION share/zenc)
+install(FILES src/repl/docs.json DESTINATION share/zenc)
 install(FILES plugins/zprep_plugin.h DESTINATION include/zenc)
 install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION lib/zenc/plugins 
         FILES_MATCHING PATTERN "*.${PLUGIN_EXT}")
