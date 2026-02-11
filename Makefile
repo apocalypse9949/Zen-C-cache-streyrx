@@ -105,7 +105,11 @@ $(TARGET): $(OBJS)
 
 # Compile
 $(OBJ_DIR)/%.o: %.c
+ifeq ($(OS),Windows_NT)
 	@if not exist "$(subst /,\,$(@D))" mkdir "$(subst /,\,$(@D))"
+else
+	@mkdir -p $(@D)
+endif
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # APE targets
