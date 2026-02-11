@@ -1,5 +1,7 @@
 obj/
 zc
+zc.exe
+*.exe
 result
 out.c
 a.out
@@ -23,3 +25,5 @@ out/
 docs/html/
 docs/latex/
 *.db
+tracked_files.txt
+test_out.txt
