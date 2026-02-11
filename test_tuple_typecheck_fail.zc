@@ -1,0 +1,6 @@
+fn main() {
+    let t = (1, "hello");
+    // Incorrect types: x should be int, y should be string
+    let (x: string, y: int) = t; 
+    printf("Should not compile: %s, %d\n", x, y);
+}

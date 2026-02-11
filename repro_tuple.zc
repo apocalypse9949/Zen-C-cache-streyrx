@@ -1,0 +1,18 @@
+
+fn main() {
+    // 1. Mixed types
+    let t = (1, "hello");
+    printf("Tuple: %d, %s\n", t.0, t.1);
+
+    // 2. Destructuring
+    let (a, b) = t;
+    printf("Destructured: %d, %s\n", a, b);
+
+    // 3. Typed Destructuring
+    let (x: int, y: string) = t;
+    printf("Typed: %d, %s\n", x, y);
+
+    // 4. Complex expression in tuple
+    let c = (1 + 2, "world");
+    printf("Complex: %d, %s\n", c.0, c.1);
+}

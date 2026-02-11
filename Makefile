@@ -1,10 +1,10 @@
 # OS detection and portable commands
 ifeq ($(OS),Windows_NT)
     EXE = .exe
-    RM = rm -rf
-    MKDIR = mkdir -p
-    CP = cp -af
-    LN = ln -sf
+    RM = del /Q /F
+    MKDIR = mkdir
+    CP = copy /Y
+    LN = copy /Y
     INSTALL = install
 else
     EXE =
@@ -20,10 +20,14 @@ endif
 # To build with clang: make CC=clang
 # To build with zig:   make CC="zig cc"
 # Version synchronization
-GIT_VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "0.1.0")
-CFLAGS = -Wall -Wextra -g -I./src -I./src/ast -I./src/parser -I./src/codegen -I./plugins -I./src/zen -I./src/utils -I./src/lexer -I./src/analysis -I./src/lsp -I./src/diagnostics -DZEN_VERSION=\"$(GIT_VERSION)\" -DZEN_SHARE_DIR=\"$(SHAREDIR)\"
+GIT_VERSION = 0.1.0
+CFLAGS = -Wall -Wextra -g -I./src -I./src/ast -I./src/parser -I./src/codegen -I./plugins -I./src/zen -I./src/utils -I./src/lexer -I./src/analysis -I./src/lsp -I./src/diagnostics
 TARGET = zc$(EXE)
-LIBS = -lm -lpthread -ldl
+ifeq ($(OS),Windows_NT)
+    LIBS =
+else
+    LIBS = -lm -lpthread -ldl
+endif
 
 SRCS = src/main.c \
        src/parser/parser_core.c \
@@ -92,13 +96,13 @@ plugins/%.so: plugins/%.c
 
 # Link
 $(TARGET): $(OBJS)
-	@$(MKDIR) $(dir $@)
+
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "=> Build complete: $(TARGET)"
 
 # Compile
 $(OBJ_DIR)/%.o: %.c
-	@$(MKDIR) $(dir $@)
+
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # APE targets

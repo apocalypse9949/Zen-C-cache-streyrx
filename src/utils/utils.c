@@ -1,4 +1,7 @@
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
 #include "parser.h"
 #include "zprep.h"
 
@@ -45,8 +48,6 @@ static void *arena_alloc_raw(size_t size)
     return (char *)ptr + sizeof(size_t);
 }
 
-#include <time.h>
-
 #ifdef _WIN32
 #include <windows.h>
 #include <io.h>
@@ -82,9 +83,13 @@ double z_get_monotonic_time(void)
 double z_get_time(void)
 {
 #ifdef _WIN32
-    struct timespec ts;
-    timespec_get(&ts, TIME_UTC);
-    return ts.tv_sec + ts.tv_nsec / 1e9;
+    FILETIME ft;
+    GetSystemTimeAsFileTime(&ft);
+    unsigned long long t = (unsigned long long)ft.dwHighDateTime << 32 | ft.dwLowDateTime;
+    // Windows epoch 1601-01-01. Unix epoch 1970-01-01.
+    // Difference is 116444736000000000 * 100ns
+    t -= 116444736000000000ULL;
+    return (double)t / 10000000.0;
 #else
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);

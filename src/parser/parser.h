@@ -385,7 +385,7 @@ int is_token(Token t, const char *s);
 /**
  * @brief Expects a token of a specific type.
  */
-Token expect(Lexer *l, TokenType type, const char *msg);
+Token expect(Lexer *l, ZenTokenType type, const char *msg);
 
 /**
  * @brief Skips comments in the lexer.
@@ -1035,5 +1035,8 @@ char *patch_self_args(const char *args, const char *struct_name);
  * @brief Main loop to parse top-level nodes in a file.
  */
 ASTNode *parse_program_nodes(ParserContext *ctx, Lexer *l);
+
+// Type inference helper
+char *infer_type(ParserContext *ctx, ASTNode *node);
 
 #endif // PARSER_H

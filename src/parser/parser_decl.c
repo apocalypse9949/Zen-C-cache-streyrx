@@ -371,6 +371,84 @@ ASTNode *parse_var_decl(ParserContext *ctx, Lexer *l)
             zpanic_at(lexer_peek(l), "Expected =");
         }
         ASTNode *init = parse_expression(ctx, l);
+
+        // Verify Tuple Destructuring Types
+        if (init && !is_struct)
+        {
+            char *rhs_type_str = infer_type(ctx, init);
+            if (rhs_type_str && strncmp(rhs_type_str, "Tuple_", 6) == 0)
+            {
+                char *sig_start = rhs_type_str + 6;
+                char *current_scan = sig_start;
+                int idx = 0;
+
+                while (current_scan && *current_scan && idx < count)
+                {
+                    char *next_sep = strstr(current_scan, "__");
+                    size_t len =
+                        next_sep ? (size_t)(next_sep - current_scan) : strlen(current_scan);
+
+                    if (types[idx]) // LHS has explicit type
+                    {
+                        char *actual = xmalloc(len + 1);
+                        strncpy(actual, current_scan, len);
+                        actual[len] = 0;
+
+                        // Strict string comparison is too strict due to aliasing (int vs int32_t).
+                        int compatible = 0;
+                        if (strcmp(types[idx], actual) == 0)
+                        {
+                            compatible = 1;
+                        }
+                        else if (strcmp(types[idx], "int32_t") == 0 && strcmp(actual, "int") == 0)
+                        {
+                            compatible = 1;
+                        }
+                        else if (strcmp(types[idx], "int") == 0 && strcmp(actual, "int32_t") == 0)
+                        {
+                            compatible = 1;
+                        }
+                        else if (strcmp(types[idx], "string") == 0 && strcmp(actual, "char*") == 0)
+                        {
+                            compatible = 1;
+                        }
+                        else if (strcmp(types[idx], "char*") == 0 && strcmp(actual, "string") == 0)
+                        {
+                            compatible = 1;
+                        }
+
+                        if (!compatible)
+                        {
+                            zpanic_at(init->token,
+                                      "Type mismatch in tuple destructuring at index %d: expected "
+                                      "'%s', got '%s'",
+                                      idx, types[idx], actual);
+                        }
+                        free(actual);
+                    }
+
+                    if (next_sep)
+                    {
+                        current_scan = next_sep + 2;
+                    }
+                    else
+                    {
+                        current_scan = NULL; // Finished RHS
+                    }
+                    idx++;
+                }
+
+                if (idx != count || current_scan)
+                {
+                    zpanic_at(init->token,
+                              "Tuple size mismatch in destructuring: expected %d elements", count);
+                }
+            }
+            if (rhs_type_str)
+            {
+                free(rhs_type_str);
+            }
+        }
         if (lexer_peek(l).type == TOK_SEMICOLON)
         {
             lexer_next(l);

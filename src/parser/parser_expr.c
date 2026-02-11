@@ -3236,58 +3236,35 @@ ASTNode *parse_primary(ParserContext *ctx, Lexer *l)
             char tuple_name[1024];
             sprintf(tuple_name, "Tuple_%s", sig);
 
-            char *code = xmalloc(4096);
-            sprintf(code, "(%s){", tuple_name);
+            node = ast_create(NODE_EXPR_STRUCT_INIT);
+            node->struct_init.struct_name = xstrdup(tuple_name);
+            node->struct_init.fields = NULL;
 
+            ASTNode *tail = NULL;
             for (int i = 0; i < count; i++)
             {
-                if (i > 0)
-                {
-                    strcat(code, ", ");
-                }
+                ASTNode *field = ast_create(NODE_VAR_DECL);
 
-                if (elements[i]->type == NODE_EXPR_LITERAL)
+                char fname[32];
+                sprintf(fname, "v%d", i);
+                field->var_decl.name = xstrdup(fname);
+                field->var_decl.init_expr = elements[i];
+                field->next = NULL;
+
+                if (!node->struct_init.fields)
                 {
-                    char buf[256];
-                    if (elements[i]->literal.type_kind == LITERAL_INT) // int
-                    {
-                        sprintf(buf, "%I64u", elements[i]->literal.int_val);
-                    }
-                    else if (elements[i]->literal.type_kind == LITERAL_FLOAT) // float
-                    {
-                        sprintf(buf, "%f", elements[i]->literal.float_val);
-                    }
-                    else if (elements[i]->literal.type_kind == LITERAL_STRING) // string
-                    {
-                        sprintf(buf, "\"%s\"", elements[i]->literal.string_val);
-                    }
-                    else
-                    {
-                        sprintf(buf, "0");
-                    }
-                    strcat(code, buf);
-                }
-                else if (elements[i]->type == NODE_EXPR_VAR)
-                {
-                    strcat(code, elements[i]->var_ref.name);
+                    node->struct_init.fields = field;
                 }
                 else
                 {
-                    // For complex expressions, we need a different approach
-                    // For now, just put a placeholder - this won't work for all cases
-                    // So it's a TODO...
-                    strcat(code, "/* complex expr */0");
+                    tail->next = field;
                 }
+                tail = field;
             }
-            strcat(code, "}");
-
-            node = ast_create(NODE_RAW_STMT);
-            node->raw_stmt.content = code;
 
             // Set type info
-            Type *tuple_type = type_new(TYPE_STRUCT);
-            tuple_type->name = xstrdup(tuple_name);
-            node->type_info = tuple_type;
+            node->type_info = type_new(TYPE_STRUCT);
+            node->type_info->name = xstrdup(tuple_name);
 
             // Cleanup
             free(elements);
