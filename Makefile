@@ -19,6 +19,9 @@ endif
 # Default: gcc
 # To build with clang: make CC=clang
 # To build with zig:   make CC="zig cc"
+ifeq ($(OS),Windows_NT)
+    CC = gcc
+endif
 # Version synchronization
 GIT_VERSION = 0.1.0
 CFLAGS = -Wall -Wextra -g -I./src -I./src/ast -I./src/parser -I./src/codegen -I./plugins -I./src/zen -I./src/utils -I./src/lexer -I./src/analysis -I./src/lsp -I./src/diagnostics
@@ -102,7 +105,7 @@ $(TARGET): $(OBJS)
 
 # Compile
 $(OBJ_DIR)/%.o: %.c
-
+	@if not exist "$(subst /,\,$(@D))" mkdir "$(subst /,\,$(@D))"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # APE targets
