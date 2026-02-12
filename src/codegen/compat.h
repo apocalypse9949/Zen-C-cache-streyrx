@@ -72,7 +72,7 @@
     "signed char: \"%c\", unsigned char: \"%u\", short: \"%d\", "                                  \
     "unsigned short: \"%u\", int: \"%d\", unsigned int: \"%u\", "                                  \
     "long: \"%ld\", unsigned long: \"%lu\", long long: \"%lld\", "                                 \
-    "unsigned long long: \"%llu\", float: \"%f\", double: \"%f\", "                                \
+    "unsigned long long: \"%llu\", size_t: \"%zu\", float: \"%f\", double: \"%f\", "               \
     "char*: \"%s\", const char*: \"%s\", void*: \"%p\" _z_objc_map)\n"
 
 #define ZC_C_ARG_GENERIC_STR                                                                       \
@@ -128,6 +128,16 @@ inline const char *_zc_fmt(long long)
 inline const char *_zc_fmt(unsigned long long)
 {
     return "%llu";
+}
+#if !defined(__APPLE__) || !defined(__x86_64__)
+// size_t might be same as unsigned long long on some platforms,
+// causing "redefinition" error. But we want %zu for it.
+// We can use a trick or just rely on the fact that if it's the same, %llu is fine.
+// However, the user specifically asked for %zu.
+#endif
+inline const char *_zc_fmt(size_t)
+{
+    return "%zu";
 }
 inline const char *_zc_fmt(float)
 {

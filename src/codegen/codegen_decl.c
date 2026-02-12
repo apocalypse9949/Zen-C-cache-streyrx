@@ -29,7 +29,7 @@ static void emit_freestanding_preamble(FILE *out)
           "signed char: \"%c\", unsigned char: \"%u\", short: \"%d\", "
           "unsigned short: \"%u\", int: \"%d\", unsigned int: \"%u\", "
           "long: \"%ld\", unsigned long: \"%lu\", long long: \"%lld\", "
-          "unsigned long long: \"%llu\", float: \"%f\", double: \"%f\", "
+          "unsigned long long: \"%llu\", size_t: \"%zu\", float: \"%f\", double: \"%f\", "
           "char*: \"%s\", const char*: \"%s\", void*: \"%p\")\n",
           out);
     fputs("#define _z_arg(x) _Generic((x), _Bool: _z_bool_str(x), default: (x))\n", out);
@@ -77,6 +77,7 @@ void emit_preamble(ParserContext *ctx, FILE *out)
             fputs("inline const char* _z_str(unsigned long)      { return \"%lu\"; }\n", out);
             fputs("inline const char* _z_str(long long)          { return \"%lld\"; }\n", out);
             fputs("inline const char* _z_str(unsigned long long) { return \"%llu\"; }\n", out);
+            fputs("inline const char* _z_str(size_t)             { return \"%zu\"; }\n", out);
             fputs("inline const char* _z_str(float)              { return \"%f\"; }\n", out);
             fputs("inline const char* _z_str(double)             { return \"%f\"; }\n", out);
             fputs("inline const char* _z_str(char*)              { return \"%s\"; }\n", out);

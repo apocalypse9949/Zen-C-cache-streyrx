@@ -1892,10 +1892,13 @@ char *process_printf_sugar(ParserContext *ctx, const char *content, int newline,
                 {
                     format_spec = "%lld";
                 }
-                else if (strcmp(inferred_type, "usize") == 0 || strcmp(inferred_type, "u64") == 0 ||
-                         strcmp(inferred_type, "U64") == 0 ||
+                else if (strcmp(inferred_type, "usize") == 0 ||
+                         strcmp(inferred_type, "size_t") == 0)
+                {
+                    format_spec = "%zu";
+                }
+                else if (strcmp(inferred_type, "u64") == 0 || strcmp(inferred_type, "U64") == 0 ||
                          strcmp(inferred_type, "uint64_t") == 0 ||
-                         strcmp(inferred_type, "size_t") == 0 ||
                          strcmp(inferred_type, "ulong") == 0)
                 {
                     format_spec = "%llu";
