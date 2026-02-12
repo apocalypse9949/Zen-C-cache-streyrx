@@ -69,7 +69,7 @@
     "#endif\n"                                                                                     \
     "\n"                                                                                           \
     "#define _z_str(x) _Generic((x), _Bool: \"%s\", char: \"%c\", "                                \
-    "unsigned char: \"%u\", short: \"%d\", "                                                       \
+    "short: \"%d\", "                                                                              \
     "unsigned short: \"%u\", int: \"%d\", unsigned int: \"%u\", "                                  \
     "long: \"%ld\", unsigned long: \"%lu\", long long: \"%lld\", "                                 \
     "unsigned long long: \"%llu\", size_t: \"%zu\", float: \"%f\", double: \"%f\", "               \

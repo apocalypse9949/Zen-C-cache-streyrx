@@ -26,7 +26,7 @@ static void emit_freestanding_preamble(FILE *out)
     fputs("static inline const char* _z_bool_str(_Bool b) { return b ? \"true\" : \"false\"; }\n",
           out);
     fputs("#define _z_str(x) _Generic((x), _Bool: \"%s\", char: \"%c\", "
-          "unsigned char: \"%u\", short: \"%d\", "
+          "short: \"%d\", "
           "unsigned short: \"%u\", int: \"%d\", unsigned int: \"%u\", "
           "long: \"%ld\", unsigned long: \"%lu\", long long: \"%lld\", "
           "unsigned long long: \"%llu\", size_t: \"%zu\", float: \"%f\", double: \"%f\", "
